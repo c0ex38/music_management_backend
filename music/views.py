@@ -129,13 +129,21 @@ class PlayHistoryListView(generics.ListAPIView):
 
 class PlayCountStatsView(APIView):
     """
-    Çalma istatistiklerini görüntüleme görünümü.
-    Hangi müziğin ne kadar çalındığını döndürür.
+    Mağaza bazında çalma istatistiklerini görüntüleme görünümü.
+    Hangi mağazanın ne kadar çaldığını döndürür.
+
+    Örnek Yanıt:
+    [
+      {"store_name": "Store A", "play_count": 45},
+      {"store_name": "Store B", "play_count": 30},
+      ...
+    ]
     """
     def get(self, request):
-        # Müzik başlıklarına göre çalma sayısını al
-        data = PlayHistory.objects.values('music__title').annotate(play_count=Count('music')).order_by('-play_count')
+        # Mağaza adına göre çalma sayısını al
+        data = PlayHistory.objects.values('store_name').annotate(play_count=Count('id')).order_by('-play_count')
         return Response(data)  # İstatistikleri döndür
+
 
 
 class PlaylistByStoreView(APIView):
